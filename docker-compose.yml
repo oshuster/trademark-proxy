@@ -1,0 +1,8 @@
+services:
+  trademark-proxy:
+    build: ./source
+    container_name: trademark-proxy
+    ports:
+      - 8181:8181
+    environment:
+      PORT: 8181
