@@ -1,14 +1,16 @@
 services:
   trademark-proxy:
-    build: ./source
+    build: .
     container_name: trademark-proxy
     ports:
       - 8181:8181
+    volumes:
+      - "/usr/local/servers/proxy/logs:/app/proxy/logs"
     environment:
       PORT: 8181
 
   portainer:
-    image: "portainer/portainer-ce:latest"
+    image: "portainer/portainer-ce:2.20.3"
     container_name: portainer
     command: "-H unix:///var/run/docker.sock"
     volumes:

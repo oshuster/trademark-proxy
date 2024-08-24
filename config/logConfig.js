@@ -33,7 +33,7 @@ const webLogger = winston.createLogger({
 // Логування запиту
 export const logRequest = (req, _, next) => {
   const { method, url, query } = req;
-  const message = `[REQUEST >>>] ${method} ${url} ${JSON.stringify(query)}`;
+  const message = `[REQUEST >>>] ${method} ${url} ${JSON.stringify(query)}\n\n`;
   webLogger.info(message);
 
   next();
@@ -42,7 +42,7 @@ export const logRequest = (req, _, next) => {
 // Логування відповіді
 export const logResponse = (res) => {
   const { statusCode, data } = res;
-  const message = `[<<< RESPONSE] ${statusCode} ${data}`;
+  const message = `[<<< RESPONSE] ${statusCode} ${data}\n\n`;
   webLogger.info(message);
 };
 
