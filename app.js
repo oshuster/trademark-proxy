@@ -3,6 +3,7 @@ import morgan from "morgan";
 import cors from "cors";
 import "dotenv/config";
 import proxyRouter from "./routes/proxyRouter.js";
+import { serviceLogger } from "./config/logConfig.js";
 
 const PORT = process.env.PORT || 3000;
 
@@ -24,5 +25,6 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => {
+  serviceLogger.info(`Server is running. Use our API on port: ${PORT}`);
   console.log(`Server is running. Use our API on port: ${PORT}`);
 });

@@ -1,11 +1,6 @@
 import axios from "axios";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-import * as cheerio from "cheerio";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { errorLogger, logRequest, logResponse } from "../config/logConfig.js";
+import { parserHtml } from "../helpers/parserHtml.js";
 
 export const getTrademark = async (req, res) => {
   try {
@@ -18,43 +13,15 @@ export const getTrademark = async (req, res) => {
       }
     );
 
-    // Логування відповіді у файл
-    const logFilePath = path.join(__dirname, `response.log`);
-    const logData = `Time: ${new Date().toISOString()}\nQuery: ${q}\nResponse: ${JSON.stringify(
-      response.data,
-      null,
-      2
-    )}\n\n`;
+    const parsedResponse = parserHtml(response.data);
+    const oneLineResponse = parsedResponse.replace(/\s+/g, " ").trim();
 
-    fs.appendFile(logFilePath, logData, (err) => {
-      if (err) {
-        console.error("Error logging response:", err.message);
-      } else {
-        console.log("Response logged successfully");
-      }
-    });
-
-    // Парсинг HTML з використанням cheerio
-    const $ = cheerio.load(response.data);
-
-    // Видалення всіх тегів <nav> і їх вмісту
-    $("nav").remove();
-
-    // Виправлення посилань у атрибутах src і href
-    $('img[src^="/"]').each((_, element) => {
-      const src = $(element).attr("src");
-      $(element).attr("src", `https://iprop-ua.com${src}`);
-    });
-
-    $('a[href^="/"]').each((_, element) => {
-      const href = $(element).attr("href");
-      $(element).attr("href", `https://iprop-ua.com${href}`);
-    });
-
+    logResponse({ statusCode: response.status, data: oneLineResponse });
     // Відправка обробленого HTML
-    res.status(response.status).send($.html());
+    res.status(response.status).send(parsedResponse);
   } catch (error) {
     console.error("Error fetching data:", error.message);
+    errorLogger.error(`Error fetching data: ${error.message}`);
     res
       .status(error.response ? error.response.status : 500)
       .json({ error: "Error fetching data" });
