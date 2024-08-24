@@ -1,5 +1,6 @@
 import winston from "winston";
 import "dotenv/config";
+import DailyRotateFile from "winston-daily-rotate-file";
 
 const LEVEL = process.env.LOG_LEVEL || "info";
 
@@ -13,21 +14,39 @@ const myFormat = printf(({ level, message, timestamp }) => {
 const serviceLogger = winston.createLogger({
   level: LEVEL,
   format: combine(timestamp(), myFormat),
-  transports: [new winston.transports.File({ filename: "./logs/service.log" })],
+  transports: [
+    new DailyRotateFile({
+      filename: "./logs/%DATE%-service.log",
+      datePattern: "YYYY-MM-DD",
+      maxFiles: "14d", // Зберігати лог-файли протягом 14 днів
+    }),
+  ],
 });
 
 // Логер для помилок
 const errorLogger = winston.createLogger({
   level: "error",
   format: combine(timestamp(), myFormat),
-  transports: [new winston.transports.File({ filename: "./logs/error.log" })],
+  transports: [
+    new DailyRotateFile({
+      filename: "./logs/%DATE%-error.log",
+      datePattern: "YYYY-MM-DD",
+      maxFiles: "14d",
+    }),
+  ],
 });
 
 // Логер для запитів та відповідей
 const webLogger = winston.createLogger({
   level: LEVEL,
   format: combine(timestamp(), myFormat),
-  transports: [new winston.transports.File({ filename: "./logs/web.log" })],
+  transports: [
+    new DailyRotateFile({
+      filename: "./logs/%DATE%-web.log",
+      datePattern: "YYYY-MM-DD",
+      maxFiles: "14d",
+    }),
+  ],
 });
 
 // Логування запиту

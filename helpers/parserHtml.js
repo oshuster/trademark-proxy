@@ -1,9 +1,25 @@
 import * as cheerio from "cheerio";
+import "dotenv/config";
+
+const URL_HREF = process.env.URL_HREF || "";
 
 export const parserHtml = (body) => {
   const $ = cheerio.load(body);
 
-  $("nav").remove();
+  // Витягуємо навігацію і зберігаємо її в окрему змінну
+  const navigationElement = $("nav");
+
+  // Видаляємо перший і останній елементи навігації, що відповідають зазначеному шаблону
+  // для прибирання стрілок навігації в <li>
+  navigationElement.find("li.page-item").first().remove();
+  navigationElement.find("li.page-item").last().remove();
+
+  // Зберігаємо навігацію окремо
+  const navigation = navigationElement.html();
+  const liCount = navigationElement.find("li.page-item").length;
+
+  // Видаляємо навігацію з основного HTML
+  navigationElement.remove();
 
   $('img[src^="/"]').each((_, element) => {
     const src = $(element).attr("src");
@@ -12,8 +28,16 @@ export const parserHtml = (body) => {
 
   $('a[href^="/"]').each((_, element) => {
     const href = $(element).attr("href");
-    $(element).attr("href", `https://iprop-ua.com${href}`);
+    const encodedHref = encodeURIComponent(href);
+
+    $(element).attr("href", `${URL_HREF}/${encodedHref}`);
+    $(element).attr("data-id", `${href}`);
+    $(element).removeAttr("target");
   });
 
-  return $.html();
+  return {
+    html: $.html(),
+    navigation: navigation,
+    pages: liCount,
+  };
 };
