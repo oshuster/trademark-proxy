@@ -3,7 +3,7 @@ import "dotenv/config";
 
 const URL_HREF = process.env.URL_HREF || "";
 
-export const parserHtml = (body) => {
+export const trademarkSearchHtmlCleaner = (body) => {
   const $ = cheerio.load(body);
 
   // Витягуємо навігацію і зберігаємо її в окрему змінну

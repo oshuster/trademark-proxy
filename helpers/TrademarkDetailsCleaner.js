@@ -1,6 +1,9 @@
 import * as cheerio from "cheerio";
+import "dotenv/config";
 
-export const TrademarkDetailsCleaner = (body) => {
+const URL_HREF = process.env.URL_HREF || "";
+
+export const trademarkDetailsHtmlCleaner = (body) => {
   const $ = cheerio.load(body);
 
   // Витягуємо з всього html тільки body
@@ -21,6 +24,15 @@ export const TrademarkDetailsCleaner = (body) => {
   $('img[src^="/"]').each((_, element) => {
     const src = $(element).attr("src");
     $(element).attr("src", `https://iprop-ua.com${src}`);
+  });
+
+  $('a[href^="/"]').each((_, element) => {
+    const href = $(element).attr("href");
+    const encodedHref = encodeURIComponent(href);
+
+    $(element).attr("href", `${URL_HREF}/${encodedHref}`);
+    $(element).attr("data-id", `${href}`);
+    $(element).removeAttr("target");
   });
 
   return {

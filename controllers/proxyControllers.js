@@ -1,12 +1,11 @@
 import axios from "axios";
 import { errorLogger, logResponse } from "../config/logConfig.js";
-import { parserHtml } from "../helpers/parserHtml.js";
-import { TrademarkDetailsCleaner } from "../helpers/TrademarkDetailsCleaner.js";
+import { trademarkSearchHtmlCleaner } from "../helpers/trademarkSearchHtmlCleaner.js";
+import { trademarkDetailsHtmlCleaner } from "../helpers/TrademarkDetailsCleaner.js";
 
 export const getAllTrademark = async (req, res) => {
   try {
     const { q, p } = req.query;
-    // https://iprop-ua.com/api/parts/tm-search-results/?q=2&p=14
     const response = await axios.get(
       "https://iprop-ua.com/api/parts/tm-search-results/",
       {
@@ -14,7 +13,7 @@ export const getAllTrademark = async (req, res) => {
       }
     );
 
-    const parsedHtml = parserHtml(response.data);
+    const parsedHtml = trademarkSearchHtmlCleaner(response.data);
     const oneLineResponse = parsedHtml.html?.replace(/\s+/g, " ").trim();
 
     logResponse({ statusCode: response.status, data: oneLineResponse });
@@ -33,13 +32,10 @@ export const getTrademarkDetails = async (req, res) => {
   try {
     const { q } = req.query;
     const queryString = decodeURIComponent(q);
-    console.log(queryString);
-    console.log(`https://iprop-ua.com/${queryString}`);
 
-    // https://iprop-ua.com/api/parts/tm-search-results/?q=2&p=14
     const response = await axios.get(`https://iprop-ua.com${queryString}`);
 
-    const parsedHtml = TrademarkDetailsCleaner(response.data);
+    const parsedHtml = trademarkDetailsHtmlCleaner(response.data);
 
     // Відправка обробленого HTML
     res.status(response.status).send(parsedHtml);
