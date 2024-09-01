@@ -7,7 +7,6 @@ import "dotenv/config";
 import proxyRouter from "./routes/proxyRouter.js";
 import { serviceLogger } from "./config/logConfig.js";
 
-// const PORT = process.env.PORT || 3000;
 const SSL_PORT = process.env.SSL_PORT || 3443;
 
 const httpsOptions = {
@@ -44,8 +43,3 @@ https.createServer(httpsOptions, app).listen(SSL_PORT, () => {
   );
   console.log(`HTTPS Server is running. Use our API on port: ${SSL_PORT}`);
 });
-
-// app.listen(PORT, () => {
-//   serviceLogger.info(`Server is running. Use our API on port: ${PORT}`);
-//   console.log(`Server is running. Use our API on port: ${PORT}`);
-// });
