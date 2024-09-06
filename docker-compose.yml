@@ -7,12 +7,10 @@ services:
     container_name: trademark-proxy
     ports:
       - 8181:8181
-      - 8443:8443
     volumes:
       - "/usr/local/servers/proxy/logs:/app/proxy/logs"
     environment:
       PORT: 8181
-      SSL_PORT: 8443
       URL_HREF: "/profile/help/trademark-search"
       LOG_LEVEL: "info"
 
