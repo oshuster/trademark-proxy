@@ -28,11 +28,9 @@ export const trademarkDetailsHtmlCleaner = (body) => {
 
   $('a[href^="/"]').each((_, element) => {
     const href = $(element).attr("href");
-    const encodedHref = encodeURIComponent(href);
 
-    $(element).attr("href", `${URL_HREF}/${encodedHref}`);
+    $(element).attr("href", `${URL_HREF}${href}`);
     $(element).attr("data-id", `${href}`);
-    $(element).removeAttr("target");
   });
 
   return {

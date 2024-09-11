@@ -31,9 +31,10 @@ export const getAllTrademark = async (req, res) => {
 export const getTrademarkDetails = async (req, res) => {
   try {
     const { q } = req.query;
+
     const queryString = decodeURIComponent(q);
 
-    const response = await axios.get(`https://iprop-ua.com${queryString}`);
+    const response = await axios.get(`https://iprop-ua.com/${queryString}`);
 
     const parsedHtml = trademarkDetailsHtmlCleaner(response.data);
 
