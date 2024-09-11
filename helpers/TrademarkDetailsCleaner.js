@@ -21,16 +21,29 @@ export const trademarkDetailsHtmlCleaner = (body) => {
   // Видаляємо посилання на Facebook
   bodyElement.find('a[href*="facebook.com/sharer"]').remove();
 
+  // Оновлюємо шляхи до локальних зображень
   $('img[src^="/"]').each((_, element) => {
     const src = $(element).attr("src");
     $(element).attr("src", `https://iprop-ua.com${src}`);
   });
 
+  // Оновлюємо шляхи до локальних посилань
   $('a[href^="/"]').each((_, element) => {
     const href = $(element).attr("href");
 
     $(element).attr("href", `${URL_HREF}${href}`);
     $(element).attr("data-id", `${href}`);
+  });
+
+  // Перетворюємо посилання без класу 'ulink' на <span> з класом 'tm-holder'
+  $("a:not(.ulink)").each((_, element) => {
+    const href = $(element).attr("href");
+    const text = $(element).text();
+
+    // Замінюємо <a> на <span>
+    $(element).replaceWith(
+      `<span class="tm-holder" data-id="${href}">${text}</span>`
+    );
   });
 
   return {
