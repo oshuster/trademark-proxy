@@ -21,6 +21,14 @@ export const trademarkDetailsHtmlCleaner = (body) => {
   // Видаляємо посилання на Facebook
   bodyElement.find('a[href*="facebook.com/sharer"]').remove();
 
+  // Знаходимо <div class="text-center my-4">, який містить <!-- tm-biblio-bottom -->
+  const biblioBottom = bodyElement
+    .find("div.text-center.my-4")
+    .filter((_, el) => $(el).html().includes("<!-- tm-biblio-bottom -->"));
+
+  // Видаляємо все після елемента, що містить <!-- tm-biblio-bottom -->
+  biblioBottom.nextAll().remove();
+
   // Оновлюємо шляхи до локальних зображень
   $('img[src^="/"]').each((_, element) => {
     const src = $(element).attr("src");
