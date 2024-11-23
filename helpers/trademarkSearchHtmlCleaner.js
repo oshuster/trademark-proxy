@@ -36,8 +36,7 @@ export const trademarkSearchHtmlCleaner = (body) => {
       if (href) {
         href = href.slice(1); // Видаляємо перший символ (слеш)
       }
-      console.log(href);
-      const text = $link.text(); // Отримуємо текст з <a>
+      const text = $link.text().trim(); // Отримуємо текст з <a>
       const $img = $link.find("img"); // Знаходимо <img> всередині <a>
 
       // Додаємо атрибут data-id до div.tm-thumb без початкового слеша
@@ -47,6 +46,13 @@ export const trademarkSearchHtmlCleaner = (body) => {
 
       // Створюємо новий <span class="tm-id"> з текстом
       const $span = $(`<span class="tm-id">${text}</span>`);
+
+      if ($span.text().length) {
+        const tmName = $span.text().trim();
+        if (tmName) {
+          $thumb.attr("data-name", tmName); // Додаємо його як data-name
+        }
+      }
 
       // Якщо є <img>, зберігаємо його поза <a>
       if ($img.length) {
