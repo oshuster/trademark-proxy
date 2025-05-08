@@ -1,32 +1,32 @@
-import express from "express";
-import morgan from "morgan";
-import cors from "cors";
-import "dotenv/config";
-import proxyRouter from "./routes/proxyRouter.js";
-import { serviceLogger } from "./config/logConfig.js";
+import express from 'express';
+import morgan from 'morgan';
+import cors from 'cors';
+import 'dotenv/config';
+import proxyRouter from './routes/proxyRouter.js';
+import { serviceLogger } from './config/logConfig.js';
 
-const HTTP_PORT = process.env.PORT || 3344;
+const HTTP_PORT = process.env.PORT || 80;
 
 const app = express();
 
-app.use(morgan("tiny"));
+app.use(morgan('tiny'));
 app.use(
   cors({
-    origin: "*",
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization",
+    origin: '*',
+    methods: 'GET,POST,PUT,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
   })
 );
 app.use(express.json());
 
-app.use("/api/proxy", proxyRouter);
+app.use('/', proxyRouter);
 
 app.use((_, res) => {
-  res.status(404).json({ message: "Route not found" });
+  res.status(404).json({ message: 'Route not found' });
 });
 
 app.use((err, req, res, next) => {
-  const { status = 500, message = "Server error" } = err;
+  const { status = 500, message = 'Server error' } = err;
   res.status(status).json({ message });
 });
 
